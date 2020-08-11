@@ -43,21 +43,21 @@ class ReactFromJSON<
   public internalMapping: object = {};
 
   public state: ReactFromJSONState = {
-    counter: {}
+    counter: {},
   };
 
   constructor(props: any) {
     super(props);
 
     this.internalMapping = {
-      ComponentLookup: this.ComponentLookup
+      ComponentLookup: this.ComponentLookup,
     };
   }
 
   ComponentLookup = ({
     componentIndex,
     componentType,
-    propIndex
+    propIndex,
   }: ComponentLookupProps) => {
     const { components } = this.props;
 
@@ -76,8 +76,8 @@ class ReactFromJSON<
       props: {
         id: component.id || componentIndex, // Map id to component props if specified on root. Otherwise, use index.
         propIndex: propIndex,
-        ...component.props
-      }
+        ...component.props,
+      },
     });
   };
 
@@ -87,7 +87,7 @@ class ReactFromJSON<
   ) {
     return {
       ...state,
-      counter: {}
+      counter: {},
     };
   }
 
@@ -146,7 +146,13 @@ class ReactFromJSON<
       this.internalMapping[type] || mapping[type] || mapping.default;
 
     if (typeof MappedComponent === "undefined") {
-      throw `Tried to render the "${type}" component, but it's not specified in your mapping.`;
+      return React.createElement(type, {
+        key: key,
+        propIndex: propIndex,
+        propKey: propKey,
+        _type: type,
+        ...resolvedProps,
+      });
     }
 
     return (
